@@ -2,7 +2,6 @@ import editBtn from '../images/edit-btn.svg'
 import addBtn from '../images/add-btn.svg'
 import '../index.css';
 import React from "react";
-import ApiClass from './utils/Api'
 import Card from '../components/Card'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 
@@ -10,34 +9,6 @@ import CurrentUserContext from '../contexts/CurrentUserContext'
 function Main(props) {
 
   const currentUser = React.useContext(CurrentUserContext);
-
-  const [userData, setUserData] = React.useState({});
-  const [cardsData, setCardsData] = React.useState([])
-
-  // React.useEffect(() => {
-  //   Promise.all([ApiClass.getInfoUser(), ApiClass.getInitialCards()])
-  //     .then(([info, cards]) => {
-  //       setUserData(info)
-  //       setCardsData(cards)
-  //       // userInfo.setUserInfo({inputName: items[0].name, inputJob: items[0].about, avatarInpur: items[0].avatar})
-  //       // userId = items[0]._id
-  //       // items[1].reverse();
-  //       // stockCard.renderItems(items[1])
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     })
-  // }, [])
-
-  function handleCardLike(card) {
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
-
-    ApiClass.putLikeCard(card._id, !isLiked).then((newCard) => {
-      setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-  });
-  }
-
-
 
   return (
     <main className="content">
@@ -69,7 +40,8 @@ function Main(props) {
         link = {cards.link}
         onCardClick = {props.onCardClick}
         card = {cards}
-        onCardLike = {handleCardLike}
+        onCardLike = {props.onCardLike}
+        onCardDelete = {props.onCardDelete}
         />
       ))}
       </section>

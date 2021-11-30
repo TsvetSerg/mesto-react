@@ -33,8 +33,8 @@ class Api {
       method: 'PATCH',
       headers: this._headers,
       body: JSON.stringify({
-        name: input.inputName,
-        about: input.inputJob
+        name: input.name,
+        about: input.about
       })
     })
     .then(this._checked)
@@ -45,8 +45,8 @@ class Api {
       method: 'POST',
       headers: this._headers,
       body: JSON.stringify({
-        name: input.inputTitle,
-        link: input.inputImg
+        name: input.name,
+        link: input.link
       })
     })
     .then(this._checked)
@@ -81,7 +81,7 @@ class Api {
       method: 'PATCH',
       headers: this._headers,
       body: JSON.stringify({
-        avatar: input.avatarInpur // html: <img name="avatarInpur">
+        avatar: input.avatar // html: <img name="avatarInpur">
       })
     })
     .then(this._checked)
