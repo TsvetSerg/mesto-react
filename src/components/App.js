@@ -20,7 +20,7 @@ function App() {
   const [selectedCard, setSelectedCard] = React.useState({name: '', link: ''});
   const [currentUser, setCurrentUser] = React.useState({});
   const [currentCard, setCurrentCard] = React.useState([]);
-  const [cardsData, setCardsData] = React.useState([])
+  // const [cardsData, setCardsData] = React.useState([])
 
   React.useEffect(() => {
     Promise.all([ApiClass.getInfoUser(), ApiClass.getInitialCards()])
@@ -38,9 +38,15 @@ function App() {
   function handleCardLike(card) {                 // Функуция поосстановки лайков
     const isLiked = card.likes.some(i => i._id === currentUser._id);
 
-    ApiClass.putLikeCard(card._id, !isLiked).then((newCard) => {
+    if (!isLiked) {
+    ApiClass.putLikeCard(card._id).then((newCard) => {
       setCurrentCard((state) => state.map((c) => c._id === card._id ? newCard : c));
-  });
+    })
+    } else {
+      ApiClass.deleteLikeCard(card._id).then((newCard) => {
+        setCurrentCard((state) => state.map((c) => c._id === card._id ? newCard : c));
+      })
+    }
   }
 
   function handleCardDelete(card) {             // Функция удаления карточки
@@ -67,9 +73,9 @@ function App() {
   }
 
   function handleAddPlaceSubmit(data) {
-    Promise.resolve(ApiClass.postNewCard(data))
+    ApiClass.postNewCard(data)
     .then((card) => {
-      setCardsData([card, ...cardsData])
+      setCurrentCard([card, ...currentCard])
       closeAllPopups()
     })
   }
