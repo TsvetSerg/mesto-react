@@ -1,3 +1,4 @@
+import React from "react";
 import logoImage from '../images/logo1.svg'
 
 

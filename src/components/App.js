@@ -5,7 +5,7 @@ import Main from './Main'
 import Footer from './Footer';
 import React from "react";
 import ImagePopup from './ImagePopup'
-import ApiClass from './utils/Api'
+import apiClass from './utils/Api'
 import CurrentUserContext from '../contexts/CurrentUserContext'
 import EditProfilePopup from './EditProfilePopup'
 import EditAvatarPopup from './EditAvatarPopup'
@@ -14,16 +14,15 @@ import AddPlacePopup from './AddPlacePopup'
 function App() {
 
 
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState();
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState();
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState();
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({name: '', link: ''});
   const [currentUser, setCurrentUser] = React.useState({});
   const [currentCard, setCurrentCard] = React.useState([]);
-  // const [cardsData, setCardsData] = React.useState([])
 
   React.useEffect(() => {
-    Promise.all([ApiClass.getInfoUser(), ApiClass.getInitialCards()])
+    Promise.all([apiClass.getInfoUser(), apiClass.getInitialCards()])
       .then(([info, cards]) => {
         setCurrentUser(info)
         setCurrentCard(cards)
@@ -39,44 +38,65 @@ function App() {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
 
     if (!isLiked) {
-    ApiClass.putLikeCard(card._id).then((newCard) => {
+      apiClass.putLikeCard(card._id)
+    .then((newCard) => {
       setCurrentCard((state) => state.map((c) => c._id === card._id ? newCard : c));
     })
+    .catch((err) => {
+      console.log(err);
+    })
     } else {
-      ApiClass.deleteLikeCard(card._id).then((newCard) => {
+      apiClass.deleteLikeCard(card._id)
+      .then((newCard) => {
         setCurrentCard((state) => state.map((c) => c._id === card._id ? newCard : c));
+      })
+      .catch((err) => {
+        console.log(err);
       })
     }
   }
 
   function handleCardDelete(card) {             // Функция удаления карточки
-    ApiClass.deleteCard(card._id).then((del) => {
+    apiClass.deleteCard(card._id)
+    .then(() => {
       setCurrentCard((state) => state.filter((c) => c._id !== card._id ))
+    })
+    .catch((err) => {
+      console.log(err);
     })
   }
 
   function handleUpdateUser(data) {
-    Promise.resolve(ApiClass.patchInfoUser(data))
+    apiClass.patchInfoUser(data)
     .then((info) => {
       setCurrentUser(info)
       closeAllPopups()
+    })
+    .catch((err) => {
+      console.log(err);
     })
   }
 
 
   function handleUpdateAvatar(data) {
-    Promise.resolve(ApiClass.patchNewAvatar(data))
+    Promise.resolve(apiClass.patchNewAvatar(data))
     .then((info) => {
       setCurrentUser(info)
       closeAllPopups()
     })
+    .catch((err) => {
+      console.log(err);
+    })
   }
 
   function handleAddPlaceSubmit(data) {
-    ApiClass.postNewCard(data)
+    apiClass.postNewCard(data)
     .then((card) => {
       setCurrentCard([card, ...currentCard])
       closeAllPopups()
+    })
+    .catch((err) => {
+      console.log(err);
     })
   }
 
